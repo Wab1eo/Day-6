@@ -3,18 +3,23 @@
 
 int input(int *a, int *check);
 void output(int *a, int *check);
-void sort(int *a);
+void bubbleSort(int *a);
+void insertionSort(int *a);
 
 int main()
 {
     int data[NMAX];
     int check = 1;
     input(data, &check);
+    printf("\n");
     if (check == 1){
-        sort(data);
+        bubbleSort(data);
     }
     output(data, &check);
-
+    if (check == 1){
+        bubbleSort(data);
+    }
+    output(data, &check);
     return 0;
 }
 
@@ -45,7 +50,7 @@ void output(int *a, int *check)
     }
 }
 
-void sort(int *a)
+void bubbleSort(int *a)
 {
     for (int *i = a; i < NMAX + a; i++) {
         for (int *j = a; j < NMAX + a - 1; j++) {
@@ -55,5 +60,18 @@ void sort(int *a)
                 *(j + 1) = temp;
             }
         }
+    }
+}
+
+void insertionSort(int *a)
+{
+    for (int g = 1; g < NMAX; ++g) {
+        int key = a[g];
+        int h = g - 1;
+        while (h >= 0 && a[h] > key) {
+            a[h + 1] = a[h];
+            h = h - 1;
+        }
+        a[h + 1] = key;
     }
 }
