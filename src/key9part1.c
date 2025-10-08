@@ -14,6 +14,9 @@ int main()
 	int summ = 0;
     if (check == 1){
         summ = sum_numbers(data, a);
+        if (summ == -1){
+            check = 0;
+        }
 		a = find_numbers(data, a, summ, data);
     }
 	printf("\n");
@@ -58,13 +61,18 @@ void output (int *buffer, int *length, int *check, int summ){
 int sum_numbers(int *buffer, int length)
 {
 	int sum = 0;
+    int allgood = 0;
 	for (int d = 0; d < length; d++)
 	{
 		if (buffer[d] % 2 == 0)
 		{
 			sum = sum + buffer[d];
+            allgood = 1;
 		}
 	}
+    if (allgood != 1){
+        return -1;
+    }
 	return sum;
 }
 
