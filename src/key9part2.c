@@ -5,8 +5,8 @@
 void sum(int *buff1, int len1, int *buff2, int len2, int *result, int *result_length);
 void sub(int *buff1, int len1, int *buff2, int len2, int *result, int *result_length);
 void input (int *buff1, int *len1, int *buff2, int *len2, int *check);
-void output (int *buffer, int *length, int *check);
-void move(int *buffer, int n);
+void output (int *buff, int *len, int *check);
+void move(int *buff, int n);
 
 int main()
 {
@@ -19,6 +19,9 @@ int main()
         output(result, &result_length, &check);
         sub(data1, len1, data2, len2, result, &result_length);
         output(result, &result_length, &check);
+    }
+    else {
+        printf("n/a\n");
     }
     return 0;
 }
@@ -44,9 +47,9 @@ void input (int *buff1, int *len1, int *buff2, int *len2, int *check){
     *len2 = p2 - buff2 + 1;
 }
 
-void output (int *buffer, int *length, int *check){
+void output (int *buff, int *len, int *check){
     if (*check == 1){
-        for (int *p = buffer; p - buffer < *length; p++) {
+        for (int *p = buff; p - buff < *len; p++) {
             printf("%d ", *p);
         }
         printf("\n");
@@ -58,31 +61,64 @@ void output (int *buffer, int *length, int *check){
 
 void sum(int *buff1, int len1, int *buff2, int len2, int *result, int *result_length){
     int carry = 0;
-    *result_length = len1 - 1;
-    for(int j = len1 - 1; j >= 0; j--){
-        int sum = buff1[j] + buff2[j] + carry;
-        if (sum > 9){
-            result[*result_length] = sum - 10;
-            carry = 1;
+    if (len1 > len2) {
+        *result_length = len1 - 1;
+        for(int j = len2 - 1; j >= 0; j--){
+            int sum = buff1[j + (len1 - len2)] + buff2[j] + carry;
+            if (sum > 9){
+                result[*result_length] = sum - 10;
+                carry = 1;
+            }
+            else {
+                result[*result_length] = sum;
+                carry = 0;
+            }
+            --*result_length;
         }
-        else {
-            result[*result_length] = sum;
+        for (int j = len1 - len2 - 1; j >= 0; j--) {
+            result[*result_length] = buff1[j] + carry;
+            --*result_length;
             carry = 0;
         }
-        --*result_length;
+        *result_length = len1;
+        if (carry == 1){
+            move(result, *result_length + 1);
+            result[0] = carry;
+            *result_length = len1 + 1;
+        }
     }
-    *result_length = len1;
-    if (carry == 1){
-        move(result, *result_length + 1);
-        result[0] = carry;
-        *result_length = len1 + 1;
+    else {
+        *result_length = len2 - 1;
+        for(int j = len1 - 1; j >= 0; j--){
+            int sum = buff1[j + (len2 - len1)] + buff2[j] + carry;
+            if (sum > 9){
+                result[*result_length] = sum - 10;
+                carry = 1;
+            }
+            else {
+                result[*result_length] = sum;
+                carry = 0;
+            }
+            --*result_length;
+        }
+        for (int j = len2 - len1 - 1; j >= 0; j--) {
+            result[*result_length] = buff1[j] + carry;
+            --*result_length;
+            carry = 0;
+        }
+        *result_length = len2;
+        if (carry == 1){
+            move(result, *result_length + 1);
+            result[0] = carry;
+            *result_length = len2 + 1;
+        }
     }
 }
 
-void move(int *buffer, int a) {
-    int tmp = buffer[0];
+void move(int *buff, int a) {
+    int tmp = buff[0];
     int tmp1 = 0;
-    for (int *p = buffer + 1; p - buffer < a; p++) {
+    for (int *p = buff + 1; p - buff < a; p++) {
         tmp1 = *p;
         *p = tmp;
         tmp = tmp1;
@@ -93,8 +129,8 @@ void move(int *buffer, int a) {
 void sub(int *buff1, int len1, int *buff2, int len2, int *result, int *result_length){
     int carry = 0;
     *result_length = len1 - 1;
-    for(int j = len1 - 1; j >= 0; j--){
-        int sum = buff1[j] - buff2[j] - carry;
+    for(int j = len2 - 1; j >= 0; j--){
+        int sum = buff1[j + (len1 - len2)] - buff2[j] - carry;
         if (sum < 0){
             result[*result_length] = sum + 10;
             carry = 1;
@@ -105,5 +141,15 @@ void sub(int *buff1, int len1, int *buff2, int len2, int *result, int *result_le
         }
         --*result_length;
     }
+    for (int j = len1 - len2 - 1; j >= 0; j--) {
+        result[*result_length] = buff1[j] - carry;
+        --*result_length;
+        carry = 0;
+    }
     *result_length = len1;
+    if (carry == 1){
+        move(result, *result_length + 1);
+        result[0] = carry;
+        *result_length = len1 + 1;
+    }
 }
